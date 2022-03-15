@@ -180,8 +180,6 @@ public class fut {
 
     if (existeClube == true) {
       System.out.println(toString());
-    } else {
-      System.out.println("Clube não encontrado !");
     }
 
   }

@@ -83,15 +83,22 @@ public class arquivocrud {
 
     System.out.print("Escreva o nome do clube: ");
     ft.setNome(entrada.nextLine());
-    System.out.println();
-    System.out.print("Insira o cnpj do clube: ");
-    cnpjparaveri = entrada.nextLine();// AQUI PRECISA TRATAR O CPNJ;
-    ft.setCnpj(cnpjparaveri);
-    System.out.println();
-    System.out.print("Insira a cidade do clube: ");
-    ft.setCidade(entrada.nextLine());
 
-    escreverArquivo(ft);
+    if (!(ft.getNome().equals(""))) {
+
+      System.out.println();
+      System.out.print("Insira o cnpj do clube: ");
+      cnpjparaveri = entrada.nextLine();// AQUI PRECISA TRATAR O CPNJ;
+      ft.setCnpj(cnpjparaveri);
+      System.out.println();
+      System.out.print("Insira a cidade do clube: ");
+      ft.setCidade(entrada.nextLine());
+
+      escreverArquivo(ft);
+    } else {
+      System.out.println("\nArquivo com o Campo nome vazio não é possivel ser escrito !\n");
+      return;
+    }
 
   }
 
@@ -247,7 +254,7 @@ public class arquivocrud {
 
         if (idExist == false) {
 
-          System.out.println("ID/Clube pesquisado não encontrado");
+          System.out.println("\nID/Clube pesquisado não encontrado");
           System.out.println();
 
         }
@@ -256,7 +263,7 @@ public class arquivocrud {
         idExist = lerArquivoNome(recebendo, ft2);
 
         if (idExist == false) {
-          System.out.println("Nome do Clube pesquisado não encontrado");
+          System.out.println("\nNome do Clube pesquisado não encontrado");
           System.out.println();
         }
 
