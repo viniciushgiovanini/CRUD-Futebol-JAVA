@@ -2,7 +2,6 @@ import java.util.Scanner;
 import java.io.RandomAccessFile;
 
 import java.io.PrintWriter;
-import java.io.File;
 
 public class arquivocrud {
 
@@ -22,24 +21,6 @@ public class arquivocrud {
 
   }
 
-  public boolean verificarArquivo(String caminho) {
-
-    File f = new File(caminho);
-
-    boolean arquivoexiste = false;
-
-    if (f.exists()) {
-      if (f.isFile()) {
-        arquivoexiste = true;
-      }
-    }
-
-    return arquivoexiste;
-  }
-
-  // ---------------------PESQUISA------------------------//
-
-  // ---------------------PESQUISA------------------------//
   // -------------------Create---------------------------------//
 
   public void escreverArquivo(fut ft) {
@@ -54,8 +35,8 @@ public class arquivocrud {
     byte[] ba;
 
     try {
-
-      boolean arqExist = verificarArquivo("dados/futebol.db");
+      // verificarArquivo("dados/futebol.db");
+      boolean arqExist = false;
       short idcabecalhosave = 0;
       arq = new RandomAccessFile("dados/futebol.db", "rw");
 
@@ -81,7 +62,14 @@ public class arquivocrud {
       arq.write(ba);
 
     } catch (Exception e) {
-      System.out.println("ERRO NA ESCRITA !");
+      String erro = e.getMessage();
+
+      if (erro.contains("No such file or directory")) {
+
+        System.out.println("Diretório do arquivo não encontrado !");
+        return;
+      }
+
     }
 
     System.out.println("------X------");
@@ -111,76 +99,71 @@ public class arquivocrud {
 
   // ----------------------READ-------------------------//
 
-  public boolean lerArquivoId(short idproc, fut ft2) {
+  public boolean lerArquivoId(short idproc, fut ft2) throws Exception {
     RandomAccessFile arq;
     byte ba[];
     boolean idExist = false;
     String lapide;
 
-    try {
+    arq = new RandomAccessFile("dados/futebol.db", "rw");
+    arq.seek(2);
+    int tam = arq.readInt();
+    long posicaosave = arq.getFilePointer();
+    short idlido = arq.readShort();
+    int contador = 0;
+    boolean idencontrado = false;
+    boolean idnaoexistente = false;
 
-      arq = new RandomAccessFile("dados/futebol.db", "rw");
-      arq.seek(2);
-      int tam = arq.readInt();
-      long posicaosave = arq.getFilePointer();
-      short idlido = arq.readShort();
-      int contador = 0;
-      boolean idencontrado = false;
-      boolean idnaoexistente = false;
+    long ultimaPosiArq = (long) arq.length();
 
-      long ultimaPosiArq = (long) arq.length();
+    while (contador <= idproc && idencontrado == false && idnaoexistente == false) {
 
-      while (contador <= idproc && idencontrado == false && idnaoexistente == false) {
+      if (idlido == idproc) {
 
-        if (idlido == idproc) {
+        lapide = arq.readUTF();
 
-          lapide = arq.readUTF();
-
-          if ((lapide.equals(" ") == true)) {
-            idencontrado = true;
-            arq.seek(posicaosave);
-          }
-
-        }
-
-        if ((idencontrado == false) && (posicaosave + tam < ultimaPosiArq)) {
+        if ((lapide.equals(" ") == true)) {
+          idencontrado = true;
           arq.seek(posicaosave);
-          int converlt = (int) posicaosave;
-          posicaosave = (long) tam + converlt;
-          arq.seek(posicaosave);
-
-          tam = arq.readInt();
-          posicaosave = arq.getFilePointer();
-          idlido = arq.readShort();
-
-        } else {
-          if (idencontrado == false) {
-            idnaoexistente = true;
-          }
-
         }
-
-        contador++;
 
       }
 
-      if (idencontrado == true && idlido == idproc) {
-        ba = new byte[tam];
-        arq.read(ba);
-        ft2.fromByteArray(ba);
-        // System.out.println(ft2.toString());
-        idExist = true;
+      if ((idencontrado == false) && (posicaosave + tam < ultimaPosiArq)) {
+        arq.seek(posicaosave);
+        int converlt = (int) posicaosave;
+        posicaosave = (long) tam + converlt;
+        arq.seek(posicaosave);
+
+        tam = arq.readInt();
+        posicaosave = arq.getFilePointer();
+        idlido = arq.readShort();
+
+      } else {
+        if (idencontrado == false) {
+          idnaoexistente = true;
+        }
 
       }
 
-    } catch (Exception e) {
-      System.out.println("Erro na leitura 2 de arquivo !. ERROR: " + e.getMessage());
+      contador++;
+
     }
+
+    if (idencontrado == true && idlido == idproc) {
+      ba = new byte[tam];
+      arq.read(ba);
+      ft2.fromByteArray(ba);
+      // System.out.println(ft2.toString());
+      idExist = true;
+
+    }
+    arq.close();
 
     return idExist;
   }
 
-  public boolean lerArquivoNome(String nome, fut ft2) {
+  public boolean lerArquivoNome(String nome, fut ft2) throws Exception {
 
     RandomAccessFile rafN;
     byte ba[];
@@ -190,50 +173,46 @@ public class arquivocrud {
     long saveLapide = 0;
     String lapide;
 
-    try {
-      rafN = new RandomAccessFile("dados/futebol.db", "rw");
+    rafN = new RandomAccessFile("dados/futebol.db", "rw");
+    long tamTotalArq = rafN.length();
 
-      long tamTotalArq = rafN.length();
+    rafN.seek(2);
+    int tamRegistro = rafN.readInt();
+    posiI = rafN.getFilePointer();
+    rafN.seek(rafN.getFilePointer() + 2);
+    saveLapide = rafN.getFilePointer();
+    rafN.seek(saveLapide + 3);
+    String nomeR = rafN.readUTF();
+    // rafN.seek(posiI);
 
-      rafN.seek(2);
-      int tamRegistro = rafN.readInt();
+    while (posiI + tamRegistro < tamTotalArq && (nome.equals(nomeR) == false)) {
+      posiMudar = (long) tamRegistro;
+      rafN.seek(posiMudar + posiI);
+      tamRegistro = rafN.readInt();
       posiI = rafN.getFilePointer();
       rafN.seek(rafN.getFilePointer() + 2);
       saveLapide = rafN.getFilePointer();
       rafN.seek(saveLapide + 3);
-      String nomeR = rafN.readUTF();
-      // rafN.seek(posiI);
+      nomeR = rafN.readUTF();
+      rafN.seek(posiI);
 
-      while (posiI + posiMudar < tamTotalArq && (nome.equals(nomeR) == false)) {
-        posiMudar = (long) tamRegistro;
-        rafN.seek(posiMudar + posiI);
-        tamRegistro = rafN.readInt();
-        posiI = rafN.getFilePointer();
-        rafN.seek(rafN.getFilePointer() + 2);
-        saveLapide = rafN.getFilePointer();
-        rafN.seek(saveLapide + 3);
-        nomeR = rafN.readUTF();
-        rafN.seek(posiI);
-
-      }
-
-      if (nome.equals(nomeR) == true) {
-
-        rafN.seek(saveLapide);
-        lapide = rafN.readUTF();
-        if (lapide.equals(" ")) {
-          rafN.seek(posiI);
-          ba = new byte[tamRegistro];
-          rafN.read(ba);
-          ft2.fromByteArray(ba);
-          nomeExist = true;
-        }
-
-      }
-
-    } catch (Exception e) {
-      System.out.println("ERRO: NO READ do arquivo a procura por NOME !" + e.getMessage());
     }
+
+    if (nome.equals(nomeR) == true) {
+
+      rafN.seek(saveLapide);
+      lapide = rafN.readUTF();
+      if (lapide.equals(" ")) {
+        rafN.seek(posiI);
+        ba = new byte[tamRegistro];
+        rafN.read(ba);
+        ft2.fromByteArray(ba);
+        nomeExist = true;
+      }
+
+    }
+
+    rafN.close();
 
     return nomeExist;
 
@@ -252,43 +231,50 @@ public class arquivocrud {
 
     try {
 
-      boolean existearq = verificarArquivo("dados/futebol.db");
+      // boolean existearq = verificarArquivo("dados/futebol.db");
 
-      if (existearq == true) {
+      // if (existearq == true) {
 
-        boolean idOrnot = recebendo.matches("-?\\d+");
+      boolean idOrnot = recebendo.matches("-?\\d+");
 
-        if (idOrnot == true) {
+      if (idOrnot == true) {
 
-          // System.out.println("Qual ID você quer pesquisar no Arquivo ?");
-          // short idlido = entradaLeituraId.nextShort();
-          int idlidoum = Integer.parseInt(recebendo);
-          short idlido = (short) idlidoum;
-          idExist = lerArquivoId(idlido, ft2);
+        // System.out.println("Qual ID você quer pesquisar no Arquivo ?");
+        // short idlido = entradaLeituraId.nextShort();
+        int idlidoum = Integer.parseInt(recebendo);
+        short idlido = (short) idlidoum;
+        idExist = lerArquivoId(idlido, ft2);
 
-          if (idExist == false) {
+        if (idExist == false) {
 
-            System.out.println("ID/Clube pesquisado não encontrado");
-            System.out.println();
-
-          }
-
-        } else {
-          idExist = lerArquivoNome(recebendo, ft2);
-
-          if (idExist == false) {
-            System.out.println("Nome do Clube pesquisado não encontrado");
-            System.out.println();
-          }
+          System.out.println("ID/Clube pesquisado não encontrado");
+          System.out.println();
 
         }
 
       } else {
-        System.out.println("ERRO: Arquivo não foi criado, não tem nada para ser procurado !");
+        idExist = lerArquivoNome(recebendo, ft2);
+
+        if (idExist == false) {
+          System.out.println("Nome do Clube pesquisado não encontrado");
+          System.out.println();
+        }
+
       }
 
+      // } else {
+      // System.out.println("ERRO: Arquivo não foi criado, não tem nada para ser
+      // procurado !");
+      // }
+
     } catch (Exception e) {
-      System.out.println("Ocorreu um erro: " + e.getMessage());
+      String erro = e.getMessage();
+
+      if (erro.contains("No such file or directory")) {
+
+        System.out.println("Diretório do arquivo não encontrado !");
+        return false;
+      }
     }
 
     return idExist;
