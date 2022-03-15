@@ -37,6 +37,9 @@ public class arquivocrud {
     return arquivoexiste;
   }
 
+  // ---------------------PESQUISA------------------------//
+
+  // ---------------------PESQUISA------------------------//
   // -------------------Create---------------------------------//
 
   public void escreverArquivo(fut ft) {
