@@ -7,6 +7,7 @@ public class futebolprincipal {
     Scanner entradaPesquisa = new Scanner(System.in);
     Scanner entradaDelete = new Scanner(System.in);
     Scanner vericarUDelete = new Scanner(System.in);
+    Scanner entradaUpdate = new Scanner(System.in);
     arquivocrud arqcru = new arquivocrud();
     fut futebas = new fut();
 
@@ -37,8 +38,12 @@ public class futebolprincipal {
           futebas.printarClubesExistentes(arqcru.procurarClube(entradaPesquisadeClube, futebas));
           break;
         case 4:
-          System.out.println("UPDATE");
-
+          // System.out.println("Digite o ID ou Nome do Clube na qual será atualizado os
+          // dados !");
+          // String entradaUpg = entradaUpdate.nextLine();
+          // arqcru.pesquisarNoArquivo(entradaUpg, futebas);
+          // arqcru.arquivoUpdate(entradaUpg, entradaUpdate, futebas);
+          break;
         case 5:
           System.out.println("Digite o ID para ser deletado");
           String idDelete = vericarUDelete.nextLine();
@@ -58,6 +63,7 @@ public class futebolprincipal {
     entradaPesquisa.close();
     entradaclube.close();
     vericarUDelete.close();
+    entradaUpdate.close();
 
   }
 }

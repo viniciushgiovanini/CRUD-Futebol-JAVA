@@ -75,12 +75,13 @@ public class fut {
     this.cidade = cidade;
   }
 
-  public void setCnpj(String cnpj) {
+  public void setCnpj(String cnpjRC) {
 
-    if (verificaCPNJ(cnpj) == true) {
-      this.cnpj = cnpj;
+    if (verificaCPNJ(cnpjRC) == true) {
+      this.cnpj = cnpjRC;
     } else {
       System.out.println("CNPJ NÃO VALIDO");
+      this.cnpj = "";
     }
 
   }
