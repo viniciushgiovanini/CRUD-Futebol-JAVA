@@ -36,11 +36,10 @@ public class arquivocrud {
 
     try {
       // verificarArquivo("dados/futebol.db");
-      boolean arqExist = false;
       short idcabecalhosave = 0;
       arq = new RandomAccessFile("dados/futebol.db", "rw");
 
-      if (arqExist == false || arq.length() == 0) {
+      if (arq.length() == 0) {
         idcabecalhosave = ft.getIdClube();
         arq.writeShort(idcabecalhosave);
 
@@ -113,6 +112,8 @@ public class arquivocrud {
     long posicaoRetorno = -1;
     boolean idOrnot = entrada.matches("-?\\d+");
     boolean idDeletado = false;
+    boolean idencontrado = false;
+    boolean idnexiste = false;
 
     if (idOrnot == true) {
       long posicaosave = 0;
@@ -127,19 +128,16 @@ public class arquivocrud {
         posicaosave = arq.getFilePointer();
         short idlido = arq.readShort();
         int contador = 0;
-        boolean idencontrado = false;
-        boolean idnaoexistente = false;
 
         long ultimaPosiArq = (long) arq.length();
 
-        while (contador <= idproc && idencontrado == false && idnaoexistente == false) {
+        while (contador <= idproc && idencontrado == false && idnexiste == false) {
 
           if (idlido == idproc) {
 
             lapide = arq.readUTF();
-
+            idencontrado = true;
             if ((lapide.equals(" ") == true)) {
-              idencontrado = true;
               idDeletado = false;
             } else {
               idDeletado = true;
@@ -159,9 +157,9 @@ public class arquivocrud {
             idlido = arq.readShort();
 
           } else {
+
             if (idencontrado == false) {
-              idnaoexistente = true;
-              posicaoRetorno = -1;
+              idnexiste = true;
             }
 
           }
@@ -203,20 +201,20 @@ public class arquivocrud {
         while (estouro == false) {
 
           if (entrada.equals(nomeR) == true) {
-
+            idencontrado = true;
             arq.seek(saveLapide);
             lapide = arq.readUTF();
             if (lapide.equals(" ")) {
               idDeletado = false;
+              estouro = true;
             } else {
-              posicaoRetorno = -1;
               idDeletado = true;
             }
           } else {
             idDeletado = true;
           }
 
-          if (posiI + tamRegistro < tamTotalArq && (idDeletado != false)) {
+          if (posiI + tamRegistro < tamTotalArq && (idDeletado != false) && (estouro == false)) {
             posiMudar = (long) tamRegistro;
             arq.seek(posiMudar + posiI);
             posicaoRetorno = arq.getFilePointer();
@@ -245,7 +243,7 @@ public class arquivocrud {
 
     }
 
-    if (idDeletado == true) {
+    if (idDeletado == true || idencontrado == false || idnexiste == true) {
       posicaoRetorno = -1;
     }
 
@@ -253,7 +251,7 @@ public class arquivocrud {
 
   }
 
-  public boolean procurarClube(String recebendo, fut ft2) {
+  public long procurarClube(String recebendo, fut ft2) {
 
     /*
      * como ta sendo feita a escrita
@@ -262,7 +260,6 @@ public class arquivocrud {
      */
     // Escrita no Arquivo
 
-    boolean idExist = false;
     long retornoPesquisa = pesquisarNoArquivo(recebendo, ft2);
     byte[] ba;
     RandomAccessFile arq;
@@ -276,7 +273,6 @@ public class arquivocrud {
         ba = new byte[tamRegistro];
         arq.read(ba);
         ft2.fromByteArray(ba);
-        idExist = true;
 
       } catch (Exception e) {
         String erro = e.getMessage();
@@ -284,7 +280,7 @@ public class arquivocrud {
         if (erro.contains("No such file or directory")) {
 
           System.out.println("\nDiretório do arquivo não encontrado ! ERROR" + e.getMessage());
-          return false;
+          return -10;
         }
       }
     } else {
@@ -295,7 +291,7 @@ public class arquivocrud {
       }
     }
 
-    return idExist;
+    return retornoPesquisa;
   }
 
   // ----------------------READ - FIM-------------------------//
@@ -303,79 +299,34 @@ public class arquivocrud {
   public void arquivoDelete(String id, Scanner verificarultimoDelete, fut ft2) {
 
     RandomAccessFile arq;
-
+    String lapide = "";
     boolean arquivoDeletado = false;
     try {
       arq = new RandomAccessFile("dados/futebol.db", "rw");
 
-      boolean arqExist = procurarClube(id, ft2);
+      long idExist = procurarClube(id, ft2);
 
-      if (arqExist == true) {
+      if (idExist >= 0) {
 
-        int idproc = Integer.parseInt(id);
-        String lapide;
-        arq.seek(2);
-        int tam = arq.readInt();
-        long posicaosave = arq.getFilePointer();
-        short idlido = arq.readShort();
-        int contador = 0;
-        boolean idencontrado = false;
+        System.out.println(ft2.toString());
 
-        long ultimaPosiArq = (long) arq.length();
+        System.out.println("Você deseja deletar esse registro ?");
+        String ultVeri = verificarultimoDelete.nextLine();
 
-        while (contador <= idproc && idencontrado == false) {
-
-          if (idlido == idproc) {
-
-            lapide = arq.readUTF();
-
-            if ((lapide.equals(" ") == true)) {
-              idencontrado = true;
-              arq.seek(posicaosave + 6);
-            }
-
-          }
-
-          if ((idencontrado == false) && (posicaosave + tam < ultimaPosiArq)) {
-            arq.seek(posicaosave);
-            int converlt = (int) posicaosave;
-            posicaosave = (long) tam + converlt;
-            arq.seek(posicaosave);
-
-            tam = arq.readInt();
-            posicaosave = arq.getFilePointer();
-            idlido = arq.readShort();
-
-          }
-
-          contador++;
-
+        if ((ultVeri.toLowerCase().equals("sim") == true)) {
+          arq.seek(idExist + 6);
+          lapide = "*";
+          // System.out.println(arq.getFilePointer());
+          arq.writeUTF(lapide);
+          arquivoDeletado = true;
+        } else {
+          System.out.println("Registro não Deletado");
         }
 
-        if (idencontrado == true && idlido == idproc) {
+      }
 
-          String idlido2 = String.valueOf(idlido);
-          procurarClube(idlido2, ft2);
-          System.out.println(ft2.toString());
-
-          System.out.println("Você deseja deletar esse registro ?");
-          verificarultimoDelete.reset();
-          String ultVeri = verificarultimoDelete.nextLine();
-
-          if ((ultVeri.toLowerCase().equals("sim") == true)) {
-            arq.seek(posicaosave + 2);
-            lapide = "*";
-            // System.out.println(arq.getFilePointer());
-            arq.writeUTF(lapide);
-            arquivoDeletado = true;
-          } else {
-            System.out.println("Registro não Deletado");
-          }
-
-        }
-
-      } else {
-        System.out.println("Registro não existente para ser deletado !");
+      else {
+        System.out.println("Registro não Deletado !");
       }
 
     } catch (Exception e) {

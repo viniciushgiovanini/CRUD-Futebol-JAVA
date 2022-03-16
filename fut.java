@@ -177,9 +177,9 @@ public class fut {
 
   }
 
-  public void printarClubesExistentes(boolean existeClube) {
+  public void printarClubesExistentes(long existeClube) {
 
-    if (existeClube == true) {
+    if (existeClube >= 0) {
       System.out.println(toString());
     }
 
