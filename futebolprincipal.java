@@ -27,7 +27,7 @@ public class futebolprincipal {
           System.out.println("Encerrando o programa...");
           break;
         case 1:
-          arqcru.criarClube(entradaclube, futebas);
+          arqcru.criarClube(entradaclube);
           break;
         case 2:
           System.out.println("CASE 2 - Realizar Partida");
@@ -38,11 +38,9 @@ public class futebolprincipal {
           futebas.printarClubesExistentes(arqcru.procurarClube(entradaPesquisadeClube, futebas));
           break;
         case 4:
-          // System.out.println("Digite o ID ou Nome do Clube na qual será atualizado os
-          // dados !");
-          // String entradaUpg = entradaUpdate.nextLine();
-          // arqcru.pesquisarNoArquivo(entradaUpg, futebas);
-          // arqcru.arquivoUpdate(entradaUpg, entradaUpdate, futebas);
+          System.out.println("Digite o ID ou Nome do Clube na qual será atualizado os dados !");
+          String entradaUpg = entradaUpdate.nextLine();
+          arqcru.arquivoUpdate(entradaUpg, entradaUpdate);
           break;
         case 5:
           System.out.println("Digite o ID para ser deletado");

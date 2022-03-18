@@ -90,6 +90,14 @@ public class fut {
     this.nome = nome;
   }
 
+  public void setPartidasJogadas(byte partidasJogadas) {
+    this.partidasJogadas = partidasJogadas;
+  }
+
+  public void setPontos(byte pontos) {
+    this.pontos = pontos;
+  }
+
   // ------------------------X-FIM-Métodos-Geters-e-Sets-X------------------------//
 
   public byte[] toByteArray() throws IOException {
