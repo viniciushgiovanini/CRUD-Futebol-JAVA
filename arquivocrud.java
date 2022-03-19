@@ -364,100 +364,196 @@ public class arquivocrud {
 
   // -----------------------UPDATE---------------------------------//
 
-  public int arquivoUpdate(String nomeidProcurado, Scanner entradaUpdate) {
+  public boolean arquivoUpdate(String nomeidProcurado, Scanner entradaUpdate, String tipoDeUpdate, byte Pts,
+      fut futebasParcial) {
 
     /*
      * como ta sendo feita a escrita
      * ID COMECO DO ARQUIVO + Tam do Arquiv +
      * ARRAYDEBYTE(ID+LAPIDE+NOME+CNPJ+CIDADE+PARTIDASJOGADAS+PONTOS)
      */
-    fut ft2 = new fut();
+
     RandomAccessFile arq;
-    long receberProcura = procurarClube(nomeidProcurado, ft2);
-    byte[] ba;
-    String stgConfirma = "";
 
-    if (receberProcura >= 0) {
+    if (tipoDeUpdate.equals("Completo")) {
+      fut ft2 = new fut();
+      long receberProcura = procurarClube(nomeidProcurado, ft2);
+      byte[] ba;
+      String stgConfirma = "";
 
-      System.out.println("Você deseja Atualizar o Registro abaixo ?");
-      System.out.println(ft2.toString());
-      System.out.print("Inserir Resposta: ");
-      stgConfirma = entradaUpdate.nextLine();
+      if (receberProcura >= 0) {
 
-      if (stgConfirma.toUpperCase().equals("SIM")) {
+        System.out.println("Você deseja Atualizar o Registro abaixo ?");
+        System.out.println(ft2.toString());
+        System.out.print("Inserir Resposta: ");
+        stgConfirma = entradaUpdate.nextLine();
 
-        try {
-          arq = new RandomAccessFile("dados/futebol.db", "rw");
-          arq.seek(receberProcura);
-          int tamanhoArquivoVelho = arq.readInt();
+        if (stgConfirma.toUpperCase().equals("SIM")) {
 
-          System.out.print("Atualize o nome do Clube: ");
-          ft2.setNome(entradaUpdate.nextLine());
-          System.out.println();
-          System.out.print("Atualize o CNPJ do Clube: ");
-          ft2.setCnpj(entradaUpdate.nextLine());
-          System.out.println();
-          System.out.print("Atualize a Cidade do Clube: ");
-          ft2.setCidade(entradaUpdate.nextLine());
-          System.out.println();
-          System.out.print("Atualize as Partidas Jogadas do Clube: ");
-          ft2.setPartidasJogadas(entradaUpdate.nextByte());
-          System.out.println();
-          System.out.print("Atualize os Pontos do Clube: ");
-          ft2.setPontos(entradaUpdate.nextByte());
+          try {
+            arq = new RandomAccessFile("dados/futebol.db", "rw");
+            arq.seek(receberProcura);
+            int tamanhoArquivoVelho = arq.readInt();
 
-          ba = ft2.toByteArray();
-          int tamanhoArquivoNovo = ba.length;
-
-          if (tamanhoArquivoNovo <= tamanhoArquivoVelho) {
+            System.out.print("Atualize o nome do Clube: ");
+            ft2.setNome(entradaUpdate.nextLine());
+            System.out.println();
+            System.out.print("Atualize o CNPJ do Clube: ");
+            ft2.setCnpj(entradaUpdate.nextLine());
+            System.out.println();
+            System.out.print("Atualize a Cidade do Clube: ");
+            ft2.setCidade(entradaUpdate.nextLine());
+            System.out.println();
+            System.out.print("Atualize as Partidas Jogadas do Clube: ");
+            ft2.setPartidasJogadas(entradaUpdate.nextByte());
+            System.out.println();
+            System.out.print("Atualize os Pontos do Clube: ");
+            ft2.setPontos(entradaUpdate.nextByte());
 
             ba = ft2.toByteArray();
-            arq.seek(receberProcura + 4);
-            arq.write(ba);
-            System.out.println("Arquivo Escrito com Sucesso !");
+            int tamanhoArquivoNovo = ba.length;
 
-          } else {
-            arq.seek(0);
-            // peganto tam total do arq
-            long tamanhoTotalArq = arq.length();
-            // pegando Id do cabecalho
-            arq.seek(0);
-            Short pegarPrimeiroId = 0;
-            pegarPrimeiroId = arq.readShort();
-            // marcando lapide
-            arq.seek(0);
-            arq.seek(receberProcura + 6);
-            System.out.println(arq.getFilePointer());
-            String lapide = "*";
-            arq.writeUTF(lapide);
+            if (tamanhoArquivoNovo <= tamanhoArquivoVelho) {
 
-            // indo para o final do arquivo
-            arq.seek(0);
-            arq.seek(tamanhoTotalArq);
-            pegarPrimeiroId++;
-            ft2.setIdClube(pegarPrimeiroId);
+              ba = ft2.toByteArray();
+              arq.seek(receberProcura + 4);
+              arq.write(ba);
+              System.out.println("Arquivo Escrito com Sucesso !");
 
-            ba = ft2.toByteArray();
-            arq.writeInt(ba.length);
-            arq.write(ba);
+            } else {
+              arq.seek(0);
+              // peganto tam total do arq
+              long tamanhoTotalArq = arq.length();
+              // pegando Id do cabecalho
+              arq.seek(0);
+              Short pegarPrimeiroId = 0;
+              pegarPrimeiroId = arq.readShort();
+              // marcando lapide
+              arq.seek(0);
+              arq.seek(receberProcura + 6);
+              // System.out.println(arq.getFilePointer());
+              String lapide = "*";
+              arq.writeUTF(lapide);
 
-            arq.seek(0);
-            arq.writeShort(pegarPrimeiroId);
+              // indo para o final do arquivo
+              arq.seek(0);
+              arq.seek(tamanhoTotalArq);
+              pegarPrimeiroId++;
+              ft2.setIdClube(pegarPrimeiroId);
 
-            System.out.println("Arquivo Atualizado com Sucesso !");
+              ba = ft2.toByteArray();
+              arq.writeInt(ba.length);
+              arq.write(ba);
+
+              arq.seek(0);
+              arq.writeShort(pegarPrimeiroId);
+
+              System.out.println("Arquivo Atualizado com Sucesso !");
+            }
+
+          } catch (Exception e) {
+            System.out.println("Aconteceu um ERROR: " + e.getMessage());
+            return false;
           }
 
-        } catch (Exception e) {
-          System.out.println("Aconteceu um ERROR: " + e.getMessage());
+        } else {
+          System.out.println("Arquivo NÃO atualizado !!!");
+          return false;
         }
-
       } else {
         System.out.println("Arquivo NÃO atualizado !!!");
+        return false;
+      }
+    } else {
+      if (tipoDeUpdate.equals("Parcial")) {
+
+        long receberProcura = procurarClube(nomeidProcurado, futebasParcial);
+        byte[] ba;
+
+        if (receberProcura >= 0) {
+
+          try {
+            arq = new RandomAccessFile("dados/futebol.db", "rw");
+            arq.seek(receberProcura);
+            int tamanhoArquivoVelho = arq.readInt();
+
+            byte numParti = futebasParcial.getPartidasJogadas();
+
+            if (numParti <= 40) {
+              futebasParcial.setPartidasJogadas(++numParti);
+            } else {
+              System.out.println("Numero Maximo de confrontos atingidos (20)");
+              arq.close();
+              return false;
+            }
+
+            byte qtdPonto = futebasParcial.getPontos();
+            qtdPonto += Pts;
+            if (qtdPonto <= 125) {
+              futebasParcial.setPontos(qtdPonto);
+            } else {
+              System.out.println("Clube alcançou a quantide maxima de pontos de um Campeonato (125)");
+              arq.close();
+              return false;
+            }
+
+            ba = futebasParcial.toByteArray();
+            int tamanhoArquivoNovo = ba.length;
+
+            if (tamanhoArquivoNovo <= tamanhoArquivoVelho) {
+
+              ba = futebasParcial.toByteArray();
+              arq.seek(receberProcura + 4);
+              arq.write(ba);
+              System.out.println("Arquivo Atulizado com Sucesso !\n");
+
+            } else {
+              arq.seek(0);
+              // peganto tam total do arq
+              long tamanhoTotalArq = arq.length();
+              // pegando Id do cabecalho
+              arq.seek(0);
+              Short pegarPrimeiroId = 0;
+              pegarPrimeiroId = arq.readShort();
+              // marcando lapide
+              arq.seek(0);
+              arq.seek(receberProcura + 6);
+              // System.out.println(arq.getFilePointer());
+              String lapide = "*";
+              arq.writeUTF(lapide);
+
+              // indo para o final do arquivo
+              arq.seek(0);
+              arq.seek(tamanhoTotalArq);
+              pegarPrimeiroId++;
+              futebasParcial.setIdClube(pegarPrimeiroId);
+
+              ba = futebasParcial.toByteArray();
+              arq.writeInt(ba.length);
+              arq.write(ba);
+
+              arq.seek(0);
+              arq.writeShort(pegarPrimeiroId);
+
+            }
+            arq.close();
+          } catch (Exception e) {
+            System.out.println("Aconteceu um ERROR: " + e.getMessage());
+            return false;
+          }
+
+        } else {
+          System.out.println("Arquivo NÃO atualizado !!!");
+          return false;
+        }
+      } else {
+        System.out.println("Arquivo NÃO atualizado !!!");
+        return false;
       }
     }
-    return 0;
-  }
 
+    return true;
+  }
   // -----------------------UPDATE - FINAL---------------------------------//
 
 }
