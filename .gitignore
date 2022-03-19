@@ -1,2 +1,5 @@
 *.zip
-**/V0
+/bckp/
+*.class
+
+
