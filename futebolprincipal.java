@@ -2,20 +2,21 @@ import java.util.*;
 
 public class futebolprincipal {
 
-  public static boolean realizarPartida(Scanner entrada, Scanner entradaUpdate) {
+  public static boolean realizarPartida(Scanner entrada) {
 
     fut time1 = new fut();
     fut time2 = new fut();
     arquivocrud arq = new arquivocrud();
     Boolean status = false;
     boolean status2 = false;
-
+    entrada = new Scanner(System.in);
     System.out.print("Digite o nome do primeiro clube da partida: ");
     String timeUm = entrada.nextLine();
     System.out.println();
     System.out.print("Digite o nome do SEGUNDO clube da partida: ");
     String timeDois = entrada.nextLine();
     System.out.println();
+    boolean retorno = true;
 
     long retornoTimeUm = arq.procurarClube(timeUm, time1);
 
@@ -38,35 +39,37 @@ public class futebolprincipal {
         if (placarTimeUm > placarTimeDois) {
 
           pontos = 3;
-
-          status = arq.arquivoUpdate(timeUm, entradaUpdate, "Parcial", pontos, time1);
+          status = arq.arquivoUpdate(timeUm, entrada, "Parcial", pontos, time1);
           pontos = 0;
-          status2 = arq.arquivoUpdate(timeDois, entradaUpdate, "Parcial", pontos, time2);
+          status2 = arq.arquivoUpdate(timeDois, entrada, "Parcial", pontos, time2);
 
         } else {
           pontos = 3;
           if (placarTimeUm < placarTimeDois) {
             pontos = 3;
-            status = arq.arquivoUpdate(timeDois, entradaUpdate, "Parcial", pontos, time2);
+            status = arq.arquivoUpdate(timeDois, entrada, "Parcial", pontos, time2);
             pontos = 0;
-            status2 = arq.arquivoUpdate(timeUm, entradaUpdate, "Parcial", pontos, time1);
+            status2 = arq.arquivoUpdate(timeUm, entrada, "Parcial", pontos, time1);
           } else {
             pontos = 1;
             if (placarTimeUm == placarTimeDois) {
-              status = arq.arquivoUpdate(timeUm, entradaUpdate, "Parcial", pontos, time1);
-              status2 = arq.arquivoUpdate(timeDois, entradaUpdate, "Parcial", pontos, time2);
+              status = arq.arquivoUpdate(timeUm, entrada, "Parcial", pontos, time1);
+              status2 = arq.arquivoUpdate(timeDois, entrada, "Parcial", pontos, time2);
             }
           }
+
         }
 
       } else {
         System.out.println("Realização de partida CANCELADA, time 2 não encontrado");
-        return false;
+
+        retorno = false;
       }
 
     } else {
       System.out.println("Realização de partida CANCELADA, time 1 não encontrado !");
-      return false;
+
+      retorno = false;
     }
 
     if (status == true && status2 == true) {
@@ -80,10 +83,10 @@ public class futebolprincipal {
 
     } else {
       System.out.println("Partida NÃO realizada");
-      return false;
+      retorno = false;
     }
 
-    return true;
+    return retorno;
   }
 
   public static boolean eNumero(String str, String tipo) {
@@ -109,11 +112,7 @@ public class futebolprincipal {
 
   public static void main(String[] args) {
     Scanner entrada = new Scanner(System.in);
-    Scanner entradaclube = new Scanner(System.in);
-    Scanner entradaPesquisa = new Scanner(System.in);
-    Scanner vericarUDelete = new Scanner(System.in);
-    Scanner entradaUpdate = new Scanner(System.in);
-    Scanner entradaRealizarpartida = new Scanner(System.in);
+
     arquivocrud arqcru = new arquivocrud();
     fut futebas = new fut();
 
@@ -142,28 +141,30 @@ public class futebolprincipal {
             System.out.println("Encerrando o programa...");
             break;
           case 1:
-            arqcru.criarClube(entradaclube);
+            arqcru.criarClube(entrada);
             break;
           case 2:
             // System.out.println("CASE 2 - Realizar Partida");
-            realizarPartida(entradaRealizarpartida, entradaUpdate);
+            realizarPartida(entrada);
             break;
           case 3:
+
             System.out.println("Digite o ID ou Nome do Clube a ser procurado no arquivo");
-            String entradaPesquisadeClube = entradaPesquisa.nextLine();
+            String entradaPesquisadeClube = entrada.nextLine();
             futebas.printarClubesExistentes(arqcru.procurarClube(entradaPesquisadeClube, futebas));
             break;
           case 4:
             System.out.println("Digite o ID ou Nome do Clube na qual será atualizado os dados !");
-            entradaUpdate = new Scanner(System.in);
-            String entradaUpg = entradaUpdate.nextLine();
-            arqcru.arquivoUpdate(entradaUpg, entradaUpdate, "Completo", zero, null);
+
+            String entradaUpg = entrada.nextLine();
+            arqcru.arquivoUpdate(entradaUpg, entrada, "Completo", zero, null);
 
             break;
           case 5:
+
             System.out.println("Digite o ID para ser deletado");
-            String idDelete = vericarUDelete.nextLine();
-            arqcru.arquivoDelete(idDelete, vericarUDelete, futebas);
+            String idDelete = entrada.nextLine();
+            arqcru.arquivoDelete(idDelete, entrada, futebas);
             break;
 
           case 9:
@@ -174,6 +175,7 @@ public class futebolprincipal {
             System.out.println("Digito Não Valido... Inserir novamente o digito");
 
         }
+        entrada = new Scanner(System.in);
       } else {
         System.out.println("Digito Não Valido... Inserir novamente o digito");
 
@@ -182,11 +184,6 @@ public class futebolprincipal {
     }
 
     entrada.close();
-    entradaPesquisa.close();
-    entradaclube.close();
-    vericarUDelete.close();
-    entradaUpdate.close();
-    entradaRealizarpartida.close();
 
   }
 }
