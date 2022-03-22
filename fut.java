@@ -75,6 +75,10 @@ public class fut {
     this.cidade = cidade;
   }
 
+  // --------------------------------------
+  // o setCnpj so ira setar um CPNJ caso ele seja valido, caso contrario continua
+  // vazio
+  // --------------------------------------
   public void setCnpj(String cnpjRC) {
 
     if (verificaCPNJ(cnpjRC) == true) {
@@ -99,7 +103,9 @@ public class fut {
   }
 
   // ------------------------X-FIM-Métodos-Geters-e-Sets-X------------------------//
-
+  // --------------------------------------
+  // Método para passar a classe para array de bytes
+  // --------------------------------------
   public byte[] toByteArray() throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     DataOutputStream dos = new DataOutputStream(baos);
@@ -113,6 +119,9 @@ public class fut {
     return baos.toByteArray();
   }
 
+  // --------------------------------------
+  // Método para ler um byte array e passar para a classe
+  // --------------------------------------
   public void fromByteArray(byte[] byteArray) throws IOException {
 
     ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
@@ -127,6 +136,11 @@ public class fut {
 
   }
 
+  // --------------------------------------
+  // Método verificaCNPJ recebe uma string e avalia se todos os caracteres
+  // são compativeis com um CNPJ, se for igual um CNPJ retorna true caso contratio
+  // false;
+  // --------------------------------------
   public boolean verificaCPNJ(String cnpj) {
 
     boolean verificador = false;
@@ -185,6 +199,12 @@ public class fut {
 
   }
 
+  // --------------------------------------
+  // Método printarClubesExistentes, é um método verificador para chamar o to
+  // String, pois o método de pesquisa retorna um long, caso ele seja maior ou
+  // igual a 0, o registro existe se for -1 ele não existe e se for -10 é um erro,
+  // então so pode ser impresso caso seja >= 0
+  // --------------------------------------
   public void printarClubesExistentes(long existeClube) {
 
     if (existeClube >= 0) {
@@ -193,6 +213,9 @@ public class fut {
 
   }
 
+  // --------------------------------------
+  // Método de Impressao
+  // --------------------------------------
   public String toString() {
     return "\n" + "ID do Clube: " + getIdClube() + "\n" + "Nome do Clube: " + getNome() + "\n" + "CNPJ: "
         + getCnpj()
