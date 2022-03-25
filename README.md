@@ -27,6 +27,7 @@ permite criar registro com o mesmo nome, e o método de READ só retorna um elem
 ## Documentação 📑
 
 A documentação foi feita em LaTeX, e pode ser encontrada em DOC --> CERTO_TP01_AEDS3_DOCUMENTAÇÃO_VINICIUS_HENRIQUE_GIOVANINI_692225
+Para acessar o doc diretamente clique [AQUI](https://github.com/viniciushgiovanini/CRUD-Futebol-JAVA/blob/working/doc/CERTO_TP01_AEDS3_DOCUMENTAÇÃO_VINICIUS_HENRIQUE_GIOVANINI_692225.pdf)
 
 ## Desenvolvimento
 
