@@ -6,7 +6,9 @@ import java.io.PrintWriter;
 public class arquivocrud {
 
   // -------------------FUNCAO-PARA-TESTAR-O-ARQUIVO----------------//
-
+  // --------------------------------------
+  // Método deletaTudo é um método que apaga todo o arquivo !
+  // --------------------------------------
   public void deletaTudo() {
 
     try {
@@ -22,6 +24,12 @@ public class arquivocrud {
   }
 
   // -------------------Create---------------------------------//
+
+  // --------------------------------------
+  // Método escreverArquivo, esse método recebe o objeto ft com os dados ja
+  // atribuidos a cada atributo, ele vai pegar qual vai ser o ID atribuido a esse
+  // objeto e onde ele vai ser adicionado no arquivo.
+  // --------------------------------------
 
   public void escreverArquivo(fut ft) {
 
@@ -76,6 +84,11 @@ public class arquivocrud {
 
   }
 
+  // --------------------------------------
+  // Método criarClube, esse método tem como objeto pegar os dados de um novo
+  // clube e atribuir ao objeto fut, e chamar escreverArquivo.
+  // --------------------------------------
+
   public void criarClube(Scanner entrada) {
 
     fut ft = new fut();
@@ -107,7 +120,15 @@ public class arquivocrud {
 
   // ----------------------READ-------------------------//
 
-  public long pesquisarNoArquivo(String entrada, fut ft2) {
+  // --------------------------------------
+  // Método pesquisarNoArquivo recebe uma String a ser pesquisada que pode ser o
+  // ID ou o Nome presente no registro, caso for ID ele pesquisa pelo ID, caso for
+  // Nome, ele pesquisa pelo nome de cada registro, retorna a posicao do arquivo
+  // caso encontrar, retorna -1 caso não encontre o arquivo, retorna -10 em caso
+  // de erro na pesquisa
+  // --------------------------------------
+
+  public long pesquisarNoArquivo(String entrada) {
 
     RandomAccessFile arq;
     String lapide = "";
@@ -182,7 +203,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("Diretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("Diretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         }
       }
@@ -253,7 +274,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("Diretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("Diretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         }
       }
@@ -268,6 +289,16 @@ public class arquivocrud {
 
   }
 
+  // --------------------------------------
+  // Método procurar clube, tem como parametro uma string e o objeto ft2, ele
+  // recebe o nome ou ID a ser procurado e para ser atribuido ao ft2, mas antes
+  // ele chama o método pesquisarNoArquivo, que retorna um long que é a posição do
+  // primeiro byte de onde começa o Tam do arquivo do registro procurado, se o
+  // long for -1 o arquivo procurado não existe e se o long for -10 é que deu erro
+  // na pesquisa e esse método retorna essa posição do arquivo para indicar se foi
+  // ou não achado o registro no arquivo
+  // --------------------------------------
+
   public long procurarClube(String recebendo, fut ft2) {
 
     /*
@@ -277,7 +308,7 @@ public class arquivocrud {
      */
     // Escrita no Arquivo
 
-    long retornoPesquisa = pesquisarNoArquivo(recebendo, ft2);
+    long retornoPesquisa = pesquisarNoArquivo(recebendo);
     byte[] ba;
     RandomAccessFile arq;
 
@@ -296,7 +327,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("\nDiretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("\nDiretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         } else {
           System.out.println("ERROR: " + e.getMessage());
@@ -315,6 +346,15 @@ public class arquivocrud {
 
   // ----------------------READ - FIM-------------------------//
 
+  // --------------------------------------
+  // Método arquivoDelete, tem como parametro a string ID, que é o nome ou ID do
+  // resgistro, e o objeto criado no arquivo main para ser atribuido, ele pesquisa
+  // se o ID a ser deletado existe, ele imprime o registro e pede uma confirmacao
+  // para prosseguir com o delete, se for positivo essa verificação ele marca a
+  // lapide.
+  // --------------------------------------
+
+  // ----------------------Delete-------------------------//
   public void arquivoDelete(String id, Scanner verificarultimoDelete, fut ft2) {
 
     RandomAccessFile arq;
@@ -349,7 +389,7 @@ public class arquivocrud {
       }
 
     } catch (Exception e) {
-      System.out.println("Erro quando foi deletar um registro" + e.getMessage());
+      System.out.println("Erro quando foi deletar um registro. ERROR: " + e.getMessage());
     }
 
     if (arquivoDeletado == true) {
@@ -363,7 +403,15 @@ public class arquivocrud {
   // ----------------------Delete - FINAL-------------------------//
 
   // -----------------------UPDATE---------------------------------//
-
+  // --------------------------------------
+  // Método Update, recebe como parametro, uma string que é o ID e o Nome a ser
+  // atulizado, o scanner, o tipo de Update, e caso for parcial, ele recebe os
+  // pontos para ser atualizado. Essa funcao pode fazer um update completo
+  // alterando todos os atributos do registro e um parcial que é usado no método
+  // realizar partida, na qual altera somente os pts com o que for passado e o
+  // partidasJogadas adicionando + 1, retornando true caso o update seja feito com
+  // sucesso e false caso de erro no update
+  // --------------------------------------
   public boolean arquivoUpdate(String nomeidProcurado, Scanner entradaUpdate, String tipoDeUpdate, byte Pts,
       fut futebasParcial) {
 

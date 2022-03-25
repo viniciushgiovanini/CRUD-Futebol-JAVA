@@ -2,7 +2,16 @@ import java.util.*;
 
 public class futebolprincipal {
 
+  // --------------------------------------
+  // Realizar Partida (Explicação dentro do Método)
+  // --------------------------------------
+
   public static boolean realizarPartida(Scanner entrada) {
+
+    // Esse método retorna true e false para saber se a partida foi relizada com
+    // sucesso, ele recebe o nome dos 2 time pede o placar e de acordo com o
+    // resultado da partida chama o método arquivoUpdate para atualizar ambos os
+    // times no arquivo. Erros foram tratados, caso digite um clube que não exista !
 
     fut time1 = new fut();
     fut time2 = new fut();
@@ -89,6 +98,13 @@ public class futebolprincipal {
     return retorno;
   }
 
+  // --------------------------------------
+  // Método eNumero: Recebe como parametro duas Strings, a primeira é a que vai
+  // ser analiada, e a segunda é para testar se a string testada é do tipo
+  // passado, retorna true se for um número e se o numero for do tipo passado e
+  // false caso contrario
+  // --------------------------------------
+
   public static boolean eNumero(String str, String tipo) {
 
     boolean idOrnot = str.matches("-?\\d+");
@@ -128,6 +144,8 @@ public class futebolprincipal {
           .println(
               "0 - Encerrar Programa \n1 - Cadastrar um Clube \n2 - Realizar partida\n3 - Ler um ID do arquivo\n4 - Realizar Atualização de um Registro\n5 - Realizar o Delete de um Registro ");
 
+      // Esse switch case tem 10 opcoes então foi feito com byte mas para evitar erro
+      // ele confere se o numero digitado é do tipo byte com a funcao eNumero;
       menuStr = entrada.nextLine();
       eNumero = eNumero(menuStr, "Byte");
 
@@ -168,14 +186,14 @@ public class futebolprincipal {
             break;
 
           case 9:
-            arqcru.deletaTudo();
+            arqcru.deletaTudo();// Método Criado para apagar todo o arquivo
             break;
 
           default:
             System.out.println("Digito Não Valido... Inserir novamente o digito");
 
         }
-        entrada = new Scanner(System.in);
+        entrada = new Scanner(System.in);// Limpa o Buffer do Scanner
       } else {
         System.out.println("Digito Não Valido... Inserir novamente o digito");
 
