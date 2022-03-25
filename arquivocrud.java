@@ -203,7 +203,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("Diretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("Diretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         }
       }
@@ -274,7 +274,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("Diretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("Diretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         }
       }
@@ -327,7 +327,7 @@ public class arquivocrud {
 
         if (erro.contains("No such file or directory")) {
 
-          System.out.println("\nDiretório do arquivo não encontrado ! ERROR" + e.getMessage());
+          System.out.println("\nDiretório do arquivo não encontrado ! ERROR: " + e.getMessage());
           return -10;
         } else {
           System.out.println("ERROR: " + e.getMessage());
@@ -389,7 +389,7 @@ public class arquivocrud {
       }
 
     } catch (Exception e) {
-      System.out.println("Erro quando foi deletar um registro" + e.getMessage());
+      System.out.println("Erro quando foi deletar um registro. ERROR: " + e.getMessage());
     }
 
     if (arquivoDeletado == true) {
