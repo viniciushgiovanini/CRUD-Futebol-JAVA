@@ -2,7 +2,7 @@
 
 ## Objetivo 📌
 
-🗂: O objetido desse trabalho era aprender a utilizar a mémoria secundaria do pc de maneira sequencial, dessa forma
+🗂: O objetivo desse trabalho era aprender a utilizar a mémoria secundaria do pc de maneira sequencial, dessa forma
 foi criado uma classe Futebol, com o objetivo de fazer operações CRUD no arquivo, com base principalmente o array de Bytes.
 
 Professor: Felipe Augusto Lara Soares.
